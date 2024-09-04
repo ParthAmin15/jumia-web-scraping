@@ -1,0 +1,114 @@
+from bs4 import BeautifulSoup
+import requests
+jumia = requests.get('https://www.jumia.co.ke/all-products/')
+soup = BeautifulSoup(jumia.content , 'html.parser')
+products = soup.find_all('div' , class_ = 'info')
+# Extracting Name, Price, and Rating safely with error handling
+try:
+    name_element = product.find('h3', class_='name')
+    name = name_element.text.replace('\n', '').strip() if name_element else 'No name found'
+except Exception as e:
+    name = f"Error extracting name: {e}"
+
+try:
+    price_element = product.find('div', class_='prc')
+    price = price_element.text.replace('\n', '').strip() if price_element else 'No price found'
+except Exception as e:
+    price = f"Error extracting price: {e}"
+
+try:
+    rating_element = product.find('div', class_='stars _s')
+    rating = rating_element.text.replace('\n', '').strip() if rating_element else 'No rating found'
+except Exception as e:
+    rating = f"Error extracting rating: {e}"
+for product in products:
+    try:
+        # Find and extract the Name
+        name_element = product.find('h3', class_='name')
+        Name = name_element.text.replace('\n', '').strip() if name_element else 'No name found'
+    except Exception as e:
+        Name = f"Error extracting name: {e}"
+    
+    try:
+        # Find and extract the Price
+        price_element = product.find('div', class_='prc')
+        Price = price_element.text.replace('\n', '').strip() if price_element else 'No price found'
+    except Exception as e:
+        Price = f"Error extracting price: {e}"
+    
+    try:
+        # Find and extract the Rating
+        rating_element = product.find('div', class_='stars _s')
+        Rating = rating_element.text.replace('\n', '').strip() if rating_element else 'No rating found'
+    except Exception as e:
+        Rating = f"Error extracting rating: {e}"
+
+    # Collect the information in a list and print it
+    info = [Name, Price, Rating]
+    print(info)
+url = "https://www.jumia.co.ke/all-products/" + "?page=" +str(page)+"#catalog-listing"
+for page in range(1,51):
+  url = "https://www.jumia.co.ke/all-products/" + "?page=" +str(page)+"#catalog-listing"
+  furl = requests.get(url)
+  jsoup = BeautifulSoup(furl.content , 'html.parser')
+  products = jsoup.find_all('div' , class_ = 'info')
+
+  for product in products:
+      Name = product.find('h3' , class_="name").text.replace('\n', '')
+      Price = product.find('div' , class_= "prc").text.replace('\n', '')
+      try:
+        Rating = product.find('div', class_='stars _s').text.replace('\n', '')
+      except:
+        Rating = 'None'
+
+      info = [ Name, Price,Rating]
+      print(info)
+import pandas as pd
+
+# Initialize lists to store product information
+names = []
+prices = []
+ratings = []
+
+# Loop through each product and extract details
+for product in products:
+    try:
+        name_element = product.find('h3', class_='name')
+        Name = name_element.text.replace('\n', '').strip() if name_element else 'No name found'
+    except Exception as e:
+        Name = f"Error extracting name: {e}"
+    names.append(Name)
+    
+    try:
+        price_element = product.find('div', class_='prc')
+        Price = price_element.text.replace('\n', '').strip() if price_element else 'No price found'
+    except Exception as e:
+        Price = f"Error extracting price: {e}"
+    prices.append(Price)
+    
+    try:
+        rating_element = product.find('div', class_='stars _s')
+        Rating = rating_element.text.replace('\n', '').strip() if rating_element else 'No rating found'
+    except Exception as e:
+        Rating = f"Error extracting rating: {e}"
+    ratings.append(Rating)
+
+# Create a DataFrame from the lists
+df = pd.DataFrame({
+    'Product Name': names,
+    'Price': prices,
+    'Rating': ratings
+})
+
+# Save the DataFrame to a CSV file
+df.to_csv('products.csv', index=False, encoding='utf-8')
+import shutil
+from IPython.display import FileLink
+
+# Ensure the CSV file exists
+csv_file = 'products.csv'
+
+# Create a link to download the file
+FileLink(csv_file)
+from google.colab import files
+files.download('products.csv')
